@@ -6,7 +6,8 @@
 #endif // _MSC_VER
 
 #include <cassert>
-#include <string>
+#include <cstring>
+#include <iostream>
 
 namespace tcii::ex
 { // begin namespace tcii::ex
@@ -19,13 +20,18 @@ namespace tcii::ex
 class String
 {
 public:
-  ~String();
-
-  String();
+  // feitos?
+  ~String() = default;
+  String() = default;
+  
+  // feitos
   String(const char* const);
   String(const String&);
+
+  // feito?
   String(String&&) noexcept;
 
+  // TO-DO
   void clear();
 
   auto size() const
@@ -48,11 +54,37 @@ public:
     return _data;
   }
 
-  String& operator =(const char* const);
-  String& operator =(const String&);
-  String& operator =(String&&) noexcept;
+  // funcionou
+  String& operator =(const char* const str) {
+    std::cout << "Copy char op called\n";
+    unsigned size = strlen(str);
+    copy(str, size);
+    
+    return *this;
+  }
 
-  String operator +(const char* const) const;
+  // funcionou tb
+  String& operator =(const String& str) { 
+    std::cout << "Copy ref op called\n";
+    return this->operator=(str.c_str());
+  }
+  
+  String& operator =(String&& str) noexcept {
+    std::cout << "Move ref op called\n";
+    unsigned size = str.size();
+    move(str);
+
+    return *this;
+  }
+
+  // errado, provavelmente,,,,,,,,,,,,,,
+  String operator +(const char* const str) const {
+    char* sum = strncat(sum, c_str(), size());
+    sum = strncat(sum, str, strlen(str));
+
+    return String(sum);
+  }
+
   String operator +(const String&) const;
 
   String& operator +=(const char* const);
@@ -70,8 +102,15 @@ public:
     return _data[i];
   }
 
-  bool operator ==(const char* const) const;
-  bool operator ==(const String&) const;
+  // funcionou 
+  bool operator ==(const char* const str) const {
+    return strcmp(c_str(), str) == 0;
+  } 
+
+  // funcionou
+  bool operator ==(const String& str) const {
+    return operator==(str.c_str());
+  }
 
   auto operator !=(const char* const s) const
   {
@@ -81,6 +120,18 @@ public:
   auto operator !=(const String& s) const
   {
     return !operator ==(s);
+  }
+
+  void printString() {
+    using namespace std;
+
+    cout << "String recebida: ";
+    for(unsigned i = 0; i < size(); i++) {
+      std::cout << _data[i]; 
+    }
+
+    cout << endl;
+    cout << "Tamanho: " << size() << endl;
   }
 
 private:

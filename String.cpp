@@ -3,44 +3,61 @@
 namespace tcii::ex
 { // begin namespace tcii::ex
 
-
-//////////////////////////////////////////////////////////
-//
-// String implementation
-// ======
-void
-String::copy(const char* const s, unsigned size)
-{
-  if ((_size = size) > 0)
+  //////////////////////////////////////////////////////////
+  //
+  // String implementation
+  // ======
+  void
+  String::copy(const char *const s, unsigned size)
   {
+    if ((_size = size) > 0)
+    {
+      if (isShort())
+        _data = _buffer;
+      else
+      {
+        _capacity = (_size / maxBuffer + 1) * maxBuffer;
+        _data = new char[_capacity + 1];
+      }
+      strncpy(_data, s, _size + 1);
+    }
+  }
+
+  void
+  String::move(String &other) noexcept
+  {
+    _size = other._size;
     if (isShort())
+    {
       _data = _buffer;
+      strncpy(_data, other._data, _size + 1);
+    }
     else
     {
-      _capacity = (_size / maxBuffer + 1) * maxBuffer;
-      _data = new char[_capacity + 1];
+      _capacity = other._capacity;
+      _data = other._data;
     }
-    strncpy(_data, s, _size + 1);
+    other._size = 0;
   }
-}
 
-void
-String::move(String& other) noexcept
-{
-  _size = other._size;
-  if (isShort())
-  {
-    _data = _buffer;
-    strncpy(_data, other._data, _size + 1);
+  // insert your code here
+  String::String(const char* const string) {
+    std::cout << "Char ctor called\n";
+
+    unsigned int size = strlen(string);
+    copy(string, size);
   }
-  else
-  {
-    _capacity = other._capacity;
-    _data = other._data;
+
+  String::String(const String& string) {
+    using namespace std;
+    std::cout << "Copy ctor called\n";
+    unsigned int size = strlen(string.c_str());
+
+    copy(string._data, size);
   }
-  other._size = 0;
-}
 
-// insert your code here
-
+  String::String(String&& string) noexcept {
+    std::cout << "Move ctor called\n";
+    move(string);
+  }
 } // end namespace tcii::ex
