@@ -77,10 +77,14 @@ public:
     return *this;
   }
 
-  // errado, provavelmente,,,,,,,,,,,,,,
+  // errado ops
+  // this->frase + str.frase.........
   String operator +(const char* const str) const {
-    char* sum = strncat(sum, c_str(), size());
-    sum = strncat(sum, str, strlen(str));
+    std::cout << "Sum char op called\n";
+    String sum{};
+
+    sum._data = strncat(sum._data, c_str(), size());
+    sum._data = strncat(sum._data, str, strlen(str));
 
     return String(sum);
   }

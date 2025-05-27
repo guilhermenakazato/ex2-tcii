@@ -33,8 +33,8 @@ stringTest()
   String str4{std::move(str3)};
   str4.printString();
 
-  str1 = "lemon";
-  str4 = std::move(str1);
+  str2 = str2 + "banana";
+  str4 = std::move(str2);
   str4.printString();
 }
 
