@@ -20,19 +20,25 @@ namespace tcii::ex
 class String
 {
 public:
-  // feitos?
   ~String() = default;
-  String() = default;
   
-  // feitos
+  String() = default;
   String(const char* const);
   String(const String&);
-
-  // feito?
   String(String&&) noexcept;
 
-  // TO-DO
-  void clear();
+  // capacity is only used when String is not short
+  // _data only allocates memory when String is not short
+  void clear() {
+    if(!isShort()) {
+      delete[] _data;
+      _capacity = 0u;
+    } else {
+      _data = nullptr;
+    }
+
+    _size = 0;
+  }
 
   auto size() const
   {
@@ -54,45 +60,44 @@ public:
     return _data;
   }
 
-  // funcionou
   String& operator =(const char* const str) {
-    std::cout << "Copy char op called\n";
     unsigned size = strlen(str);
     copy(str, size);
     
     return *this;
   }
 
-  // funcionou tb
   String& operator =(const String& str) { 
-    std::cout << "Copy ref op called\n";
-    return this->operator=(str.c_str());
+    return operator=(str.c_str());
   }
   
   String& operator =(String&& str) noexcept {
-    std::cout << "Move ref op called\n";
     unsigned size = str.size();
     move(str);
 
     return *this;
   }
 
-  // errado ops
-  // this->frase + str.frase.........
+  // var + "string"
   String operator +(const char* const str) const {
-    std::cout << "Sum char op called\n";
-    String sum{};
-
-    sum._data = strncat(sum._data, c_str(), size());
-    sum._data = strncat(sum._data, str, strlen(str));
+    String sum{*this};
+    strncat(sum._data, str, strlen(str));
 
     return String(sum);
   }
 
-  String operator +(const String&) const;
+  // var + var
+  String operator +(const String& str) const {
+    return operator+(str.c_str());
+  }
 
-  String& operator +=(const char* const);
-  String& operator +=(const String&);
+  String& operator +=(const char* const str) {
+    return operator=(operator+(str));
+  }
+
+  String& operator +=(const String& str) {
+    return operator=(operator+(str.c_str()));
+  }
 
   auto& operator [](unsigned i)
   {
@@ -106,12 +111,10 @@ public:
     return _data[i];
   }
 
-  // funcionou 
   bool operator ==(const char* const str) const {
     return strcmp(c_str(), str) == 0;
   } 
 
-  // funcionou
   bool operator ==(const String& str) const {
     return operator==(str.c_str());
   }

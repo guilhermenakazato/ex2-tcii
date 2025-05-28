@@ -42,22 +42,16 @@ namespace tcii::ex
 
   // insert your code here
   String::String(const char* const string) {
-    std::cout << "Char ctor called\n";
-
     unsigned int size = strlen(string);
     copy(string, size);
   }
 
   String::String(const String& string) {
-    using namespace std;
-    std::cout << "Copy ctor called\n";
     unsigned int size = strlen(string.c_str());
-
     copy(string._data, size);
   }
 
   String::String(String&& string) noexcept {
-    std::cout << "Move ctor called\n";
     move(string);
   }
 } // end namespace tcii::ex
