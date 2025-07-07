@@ -52,7 +52,7 @@ stringTest()
   cout << endl;
 
   // testando os operadores + e +=
-  str3 = str3 + " juice" + " meal"; // (var + string) (resulta em var) + string, bem definido no operator+
+  str3 = str3 + " juice" + " meal"; // (string + const char + const char) resulta em string + const char, bem definido no operator+
   str3 += " "; // str3 += " " + str2; não funciona! const char* + String não é definido no operator
   str3 += str2; // os operators assumem que sempre terá uma String primeiro.
   

@@ -22,10 +22,21 @@ class String
 public:
   ~String() = default;
   
-  String() = default;
-  String(const char* const);
-  String(const String&);
-  String(String&&) noexcept;
+  String(): _size(0), _data(_buffer) {
+    _buffer[0] = '\0';
+  }
+
+  String(const char* const string) {
+    copy(string, strlen(string));
+  }
+
+  String(const String& string) {
+    copy(string._data, strlen(string.c_str()));
+  }
+  
+  String(String&& string) noexcept {
+    move(string);
+  }
 
   // capacity is only used when String is not short
   // _data only allocates memory when String is not short
@@ -80,14 +91,23 @@ public:
 
   // var + "string"
   String operator +(const char* const str) const {
-    String sum{*this};
-    strncat(sum._data, str, strlen(str));
+    unsigned len1 = _size;
+    unsigned len2 = std::strlen(str);
+    unsigned total = len1 + len2;
 
-    return String(sum);
+    char* buffer = new char[total + 1];
+    std::memcpy(buffer, c_str(), len1);
+    std::memcpy(buffer + len1, str, len2);
+    buffer[total] = '\0';
+
+    String result(buffer);
+    delete[] buffer;
+    return result;
   }
 
   // var + var
   String operator +(const String& str) const {
+    
     return operator+(str.c_str());
   }
 

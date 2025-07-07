@@ -39,19 +39,4 @@ namespace tcii::ex
     }
     other._size = 0;
   }
-
-  // insert your code here
-  String::String(const char* const string) {
-    unsigned int size = strlen(string);
-    copy(string, size);
-  }
-
-  String::String(const String& string) {
-    unsigned int size = strlen(string.c_str());
-    copy(string._data, size);
-  }
-
-  String::String(String&& string) noexcept {
-    move(string);
-  }
 } // end namespace tcii::ex
